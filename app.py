@@ -1,5 +1,8 @@
+# coding: UTF-8
 # token情報やチャンネルidなどの定数を別のファイルにおく
 import const
+# 関数関係
+import prime
 # インストールした discord.py を読み込む
 import discord
 
@@ -24,6 +27,7 @@ async def on_message(message):
   # 「/neko」と発言したら「にゃーん」が返る処理
   if message.content == '/neko':
     await message.channel.send('にゃーん')
+  await message.channel.send(prime.primarity_test(message.content))
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
