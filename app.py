@@ -1,10 +1,10 @@
-# token情報を別のファイルにおく
-import token 
+# token情報やチャンネルidなどの定数を別のファイルにおく
+import const
 # インストールした discord.py を読み込む
 import discord
 
 # 自分のBotのアクセストークンに置き換えてください
-TOKEN = token.token
+TOKEN = const.token
 
 # 接続に必要なオブジェクトを生成
 client = discord.Client()
