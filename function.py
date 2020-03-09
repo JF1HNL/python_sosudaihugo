@@ -8,7 +8,6 @@ async def new_game(client):
       print(member)
       await role_change(member, "kankyaku")
   await channel.send('役職の初期化がおわりました。')
-      
 
 async def role_change(member, role_name):
   def role_class(i):
@@ -20,4 +19,4 @@ async def role_change(member, role_name):
   await member.remove_roles(role_class('player-b-1'))
   await member.remove_roles(role_class('player-b-2'))
   await member.add_roles(role_class(role_name))
-  await ctrl_channel.send(member.mention + f':役職を{role_name}に変更しました！')
+  await ctrl_channel.send(f'{member.mention}:役職を{role_name}に変更しました！')

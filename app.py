@@ -4,6 +4,7 @@ import const
 # 関数関係
 import prime
 import function
+import channel
 # インストールした discord.py を読み込む
 import discord
 
@@ -20,25 +21,17 @@ async def on_ready():
   # 起動したらターミナルにログイン通知が表示される
   print('...ready')
   await channel.send('server-start!')
+  return
   await function.new_game(client)
 
 # メッセージ受信時に動作する処理
 @client.event
 async def on_message(message):
-  return
-  def role_class(e):
-    return message.guild.get_role(const.role_id[e])
-  for member in message.guild.members:
-    if not member.bot:
-      print(member)
-      await member.add_roles(role_class("kankyaku"))
-      await member.remove_roles(role_class('player-a-1'))
-      await member.remove_roles(role_class('player-a-2'))
-      await member.remove_roles(role_class('player-b-1'))
-      await member.remove_roles(role_class('player-b-2'))
-  return
   # メッセージ送信者がBotだった場合は無視する
   if message.author.bot:
+    return
+  if message.channel.name == 'bot_control':
+    await channel.bot_control(message)
     return
   # 「/neko」と発言したら「にゃーん」が返る処理
   if message.content == '/neko':
