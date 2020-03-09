@@ -22,7 +22,7 @@ async def on_ready():
   print('...ready')
   await channel.send('server-start!')
   return
-  await function.new_game(client)
+  await function.new_game(client.guild)
 
 # メッセージ受信時に動作する処理
 @client.event

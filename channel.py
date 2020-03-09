@@ -19,3 +19,5 @@ async def bot_control(msg):
     user_id = ary[3].translate(str.maketrans({'<':'', '>': '', '@':'', '!':''}))
     member = msg.guild.get_member(int(user_id))
     await function.role_change(member, 'player-b-2')
+  if ary[0] == 'new_game':
+    await function.new_game(msg.guild)
