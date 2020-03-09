@@ -33,6 +33,18 @@ async def on_message(message):
   if message.channel.name == 'bot_control':
     await channel.bot_control(message)
     return
+  if message.channel.name == 'プレイヤーa-1':
+    await channel.playera1(message)
+    return
+  if message.channel.name == 'プレイヤーa-2':
+    await channel.playera2(message)
+    return
+  if message.channel.name == 'プレイヤーb-1':
+    await channel.playerb1(message)
+    return
+  if message.channel.name == 'プレイヤーb-2':
+    await channel.playerb2(message)
+    return
   # 「/neko」と発言したら「にゃーん」が返る処理
   if message.content == '/neko':
     await message.channel.send('にゃーん')

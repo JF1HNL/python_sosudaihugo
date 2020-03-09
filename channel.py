@@ -21,3 +21,15 @@ async def bot_control(msg):
     await function.role_change(member, 'player-b-2')
   if ary[0] == 'new_game':
     await function.new_game(msg.guild)
+
+async def playera1(msg):
+  return
+
+async def playera2(msg):
+  return
+
+async def playerb1(msg):
+  return
+
+async def playerb2(msg):
+  return

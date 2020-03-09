@@ -17,3 +17,6 @@
   情報や役職をリセットする
   - set_role @player-a-1 @player-a-2 @player-b-1 @player-b-2  
   役職を決める
+- プレイヤー系
+  - 状況確認
+  現在の状況を確認をする
