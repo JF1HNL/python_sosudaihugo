@@ -1,3 +1,5 @@
+import random
+
 deck = [
   {'num':1,'char':'A'},{'num':1,'char':'A'},{'num':1,'char':'A'},{'num':1,'char':'A'},
   {'num':2,'char':'2'},{'num':2,'char':'2'},{'num':2,'char':'2'},{'num':2,'char':'2'},
@@ -11,5 +13,9 @@ deck = [
   {'num':10,'char':'T'},{'num':10,'char':'T'},{'num':10,'char':'T'},{'num':10,'char':'T'},
   {'num':11,'char':'J'},{'num':11,'char':'J'},{'num':11,'char':'J'},{'num':11,'char':'J'},
   {'num':12,'char':'Q'},{'num':12,'char':'Q'},{'num':12,'char':'Q'},{'num':12,'char':'Q'},
-  {'num':13,'char':'K'},{'num':13,'char':'K'},{'num':13,'char':'K'},{'num':13,'char':'K'}
+  {'num':13,'char':'K'},{'num':13,'char':'K'},{'num':13,'char':'K'},{'num':13,'char':'K'},
+  {'num':77,'char':'X'},{'num':77,'char':'X'}
 ]
+
+random.shuffle(deck)
+print(deck)
