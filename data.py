@@ -25,9 +25,12 @@ class game:
     ]
     self.player = {'1':a, '2':b}
 
-  def dict_to_str(self, content_, type_):
+  def card_dict_to_str(self, content_, type_):
     return_str = ''
     l = self.__dict__[content_]
     for i in l:
       return_str += str(i[type_])
     return return_str
+
+a = game(player(0), player(0))
+b = game(player(0), player(0))
