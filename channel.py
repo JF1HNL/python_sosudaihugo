@@ -1,4 +1,5 @@
 import function
+import data
 
 async def bot_control(msg):
   ary = msg.content.split()
@@ -23,6 +24,13 @@ async def bot_control(msg):
     await function.role_change(member, 'player-b-2')
   if ary[0] == 'new_game':
     await function.new_game(msg.guild)
+  if ary[0] == 'game_start':
+    for i in range(11):
+      data.a.draw('1')
+      data.a.draw('2')
+      data.b.draw('1')
+      data.b.draw('2')
+    await function.message_push(msg.guild, 'bot_control', f'素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.current_situation()}')
 
 async def playera1(msg):
   return

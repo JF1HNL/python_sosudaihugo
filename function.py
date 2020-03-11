@@ -2,6 +2,10 @@
 import const
 import data
 
+async def message_push(guild, channel_name, text):
+  channel = channel = guild.get_channel(const.channel_id[channel_name])
+  await channel.send(text)
+
 async def new_game(guild):
   data.a = data.game(data.player(0), data.player(0))
   data.b = data.game(data.player(0), data.player(0))
