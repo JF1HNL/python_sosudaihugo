@@ -1,5 +1,6 @@
 # coding: UTF-8
 import const
+import data
 
 async def new_game(guild):
   channel = guild.get_channel(const.channel_id['bot_control'])
