@@ -29,7 +29,7 @@ class game:
     # self.deck = random.shuffle(self.deck)
     self.player = {'1':a, '2':b}
 
-  def card_dict_to_str(self, content_, type_):
+  def card_dict_to_str(self, content_, type_, secret_):
     return_str = ''
     if content_ == '1':
       l = self.player[content_].hand
@@ -38,15 +38,26 @@ class game:
     else:
       l = self.__dict__[content_]
     for i in l:
-      return_str += str(i[type_])
+      if secret_:
+        return_str += '?'
+      else:
+        return_str += str(i[type_])
     return return_str
 
-  def current_situation(self):
-    return f"プレイヤー1:{self.card_dict_to_str('1', 'char')}\n場の状況:{self.card_dict_to_str('field', 'char')}\nプレイヤー2:{self.card_dict_to_str('2', 'char')}"
+  def current_situation(self, one_secret, two_secret):
+    player_1 = ''.join(list(map(lambda x: x['char'], self.player['1'].hand)))
+    player_2 = ''.join(list(map(lambda x: x['char'], self.player['1'].hand)))
+    field = ''.join(list(map(lambda x: x['char'], self.field)))
+    if one_secret:
+      player_1 = ''.join(list(map(lambda x: '?', self.player['1'].hand)))
+    if two_secret:
+      player_2 = ''.join(list(map(lambda x: '?', self.player['2'].hand)))
+    return f"プレイヤー1:{player_1}\n場の状況:{field}\nプレイヤー2:{player_2}"
 
   def draw(self, player_num_):
     self.player[player_num_].hand.append(self.deck[0])
     self.deck.pop(0)
+    self.player[player_num_].hand = sorted(self.player[player_num_].hand, key=lambda x : int(x['num']))
 
 
 a = game(player(0), player(0))

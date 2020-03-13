@@ -30,7 +30,10 @@ async def bot_control(msg):
       data.a.draw('2')
       data.b.draw('1')
       data.b.draw('2')
-    await function.message_push(msg.guild, 'bot_control', f'素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.current_situation()}')
+    await function.message_push(msg.guild, 'player-a-1', f'素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.current_situation(0, 1)}')
+    await function.message_push(msg.guild, 'player-a-2', f'素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.current_situation(1, 0)}')
+    await function.message_push(msg.guild, 'jikkyo-a', f'素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.current_situation(1, 1)}')
+    await function.message_push(msg.guild, 'bot_control', f'素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.current_situation(0, 0)}')
 
 async def playera1(msg):
   return
