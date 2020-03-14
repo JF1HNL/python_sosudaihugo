@@ -7,9 +7,9 @@ def primarity_test(text):
     return "数字ではありません"
   q = int(text)
   if sympy.isprime(q) is True:
-    response_string = str(q) + "は素数"
+    return True
   elif q == 57:
-    response_string = "グロタンカット！"
+    return "グロタンカット！"
   elif q == 1729:
     response_string = "革命！"
   else:
