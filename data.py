@@ -13,6 +13,7 @@ class game:
     self.draw_flag = False
     self.field = []
     self.graveyard = []
+    self.joker_memory = {'text': '', 'replace':[]}
     self.deck = [
       {'num':1,'char':'1'},{'num':1,'char':'1'},{'num':1,'char':'1'},{'num':1,'char':'1'},
       {'num':2,'char':'2'},{'num':2,'char':'2'},{'num':2,'char':'2'},{'num':2,'char':'2'},
@@ -37,11 +38,12 @@ class game:
     player_1 = ', '.join(list(map(lambda x: x['char'], self.player['1'].hand)))
     player_2 = ', '.join(list(map(lambda x: x['char'], self.player['2'].hand)))
     field = ', '.join(list(map(lambda x: x['char'], self.field)))
+    field_num = ''.join(list(map(lambda x: str(x['num']), self.field)))
     if one_secret:
       player_1 = ', '.join(list(map(lambda x: '?', self.player['1'].hand)))
     if two_secret:
       player_2 = ', '.join(list(map(lambda x: '?', self.player['2'].hand)))
-    return f"```\nプレイヤー1:{player_1}\n場の状況:{field}\nプレイヤー2:{player_2}\n```"
+    return f"```\nプレイヤー1:{player_1}\n場の状況:{field} ({field_num})\nプレイヤー2:{player_2}\n```"
 
   def draw(self, player_num_):
     self.player[player_num_].hand.append(self.deck[0])
@@ -73,12 +75,29 @@ class game:
       self.draw_flag = False
       self.turn = teki_num(player_num_)
       return 'パスしました。'
+    if 'X' in text_: #ジョーカーを含んでいた時
+      self.joker_memory['text'] = text_
+      self.joker_memory['replace'] = []
+      return 'ジョーカーが選択されたので、最初のジョーカーの代わりとなる数字を入力してください。'
+    if self.joker_memory['text'] != '': # ジョーカーのあとの処理
+      self.joker_memory['replace'].append(text_)
+      if len(self.joker_memory['replace']) != self.joker_memory['text'].count('X'): # ジョーカー二枚つかってたとき
+        return 'もう一枚のジョーカーの代わりとなる数字を入力してください'
+      text_ = self.joker_memory['text']
+      self.joker_memory['text'] = ''
     player_input_list = []
     for char in text_:
       if not char in list(map(lambda x : x['char'], self.player[player_num_].hand)):
         self.player[player_num_].hand.extend(player_input_list)
         self.hand_sort()
         return f'{char}が手札にありません！'
+      elif char == 'X':
+        self.player[player_num_].hand.pop( # 削除
+          int(
+            list(map(lambda x : x['char'], self.player[player_num_].hand)).index(char)
+          )
+        )
+        player_input_list.append({'num': int(self.joker_memory['replace'].pop(0)), 'char': 'X'})
       else:
         player_input_list.append(
           self.player[player_num_].hand.pop(
