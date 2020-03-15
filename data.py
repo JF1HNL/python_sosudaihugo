@@ -10,6 +10,7 @@ class player:
 class game:
   def __init__(self, a, b):
     self.turn = '1'
+    self.kakumei = False
     self.draw_flag = False
     self.field = []
     self.graveyard = []
@@ -112,16 +113,26 @@ class game:
       if len(field_obj['char']) != len(player_input_obj['char']):
         self.player[player_num_].hand.extend(player_input_list)
         return 'フィールドの札の枚数と出した札の枚数が違います'
-      if int(field_obj['num']) >= int(player_input_obj['num']):
+      if int(field_obj['num']) >= int(player_input_obj['num']) and not self.kakumei:
         self.player[player_num_].hand.extend(player_input_list)
         return 'フィールドの札の数のほうが大きいです'
+      if int(field_obj['num']) <= int(player_input_obj['num']) and self.kakumei:
+        self.player[player_num_].hand.extend(player_input_list)
+        return 'ラマヌジャン革命中です。フィールドの札の数のほうが小さいです'
+    self.draw_flag = False
     self.graveyard.extend(self.field)
     self.field = []
-    self.draw_flag = False
     self.turn = teki_num(player_num_)
     if sympy.isprime(int(player_input_obj['num'])) is True:
       self.field.extend(player_input_list)
       return f"{player_input_obj['num']}は素数です！相手にターンが渡ります。"
+    if player_input_obj['num'] == '57':
+      self.turn = teki_num(player_num_)
+      self.graveyard.extend(player_input_list)
+      return f"グロタンディーク素数切りです。場が流れプレイヤー{player_num_}の番です。"
+    if player_input_obj['num'] == '1729':
+      self.field.extend(player_input_list)
+      return 'ラマヌジャン革命です。今後は値が小さい数を出してください。'
     else:
       self.player[player_num_].hand.extend(player_input_list)
       for i in player_input_list:
