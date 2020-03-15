@@ -136,6 +136,7 @@ class game:
       self.graveyard.extend(player_input_list)
       return f"グロタンディーク素数切りです。場が流れプレイヤー{player_num_}の番です。"
     if player_input_obj['num'] == '1729':
+      self.kakumei = True
       self.field.extend(player_input_list)
       return 'ラマヌジャン革命です。今後は値が小さい数を出してください。相手にターンが渡ります。'
     else:
