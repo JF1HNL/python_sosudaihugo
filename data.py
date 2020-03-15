@@ -36,6 +36,7 @@ class game:
     self.player = {'1':a, '2':b}
 
   def current_situation(self, one_secret, two_secret):
+    print(f'current_situation: one_secret={one_secret}, two_secret={two_secret}')
     player_1 = ', '.join(list(map(lambda x: x['char'], self.player['1'].hand)))
     player_2 = ', '.join(list(map(lambda x: x['char'], self.player['2'].hand)))
     field = ', '.join(list(map(lambda x: x['char'], self.field)))
@@ -47,15 +48,18 @@ class game:
     return f"```\nプレイヤー1:{player_1}\n場の状況:{field} ({field_num})\nプレイヤー2:{player_2}\n```"
 
   def draw(self, player_num_):
+    print(f'data.draw: player_num_={player_num_}')
     self.player[player_num_].hand.append(self.deck[0])
     self.deck.pop(0)
     self.player[player_num_].hand = sorted(self.player[player_num_].hand, key=lambda x : int(x['num']))
 
   def hand_sort(self):
+    print(f'data.hand_sort')
     sorted(self.player['1'].hand, key=lambda x : int(x['num']))
     sorted(self.player['2'].hand, key=lambda x : int(x['num']))
 
   def turn_message(self, player_num_):
+    print(f'data.turn_message: player_num_={player_num_}')
     if player_num_ == 'jikkyo':
       return f'{self.current_situation(1, 1)}\n\nプレイヤー{self.turn}の番です。'
     if player_num_ == self.turn:
@@ -64,6 +68,7 @@ class game:
       return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\n相手のターンです。しばらくお待ちください。"
 
   def player_input(self, player_num_, text_):  # text_は大文字
+    print(f'data.player_input: player_num_={player_num_}, text_={text_}')
     if text_ == 'D':
       if self.draw_flag:
         return "すでに一枚引きました！"
@@ -75,7 +80,7 @@ class game:
       self.field = []
       self.draw_flag = False
       self.turn = teki_num(player_num_)
-      return 'パスしました。'
+      return 'パスしました。相手にターンが渡ります。'
     if 'X' in text_: #ジョーカーを含んでいた時
       self.joker_memory['text'] = text_
       self.joker_memory['replace'] = []
@@ -132,7 +137,7 @@ class game:
       return f"グロタンディーク素数切りです。場が流れプレイヤー{player_num_}の番です。"
     if player_input_obj['num'] == '1729':
       self.field.extend(player_input_list)
-      return 'ラマヌジャン革命です。今後は値が小さい数を出してください。'
+      return 'ラマヌジャン革命です。今後は値が小さい数を出してください。相手にターンが渡ります。'
     else:
       self.player[player_num_].hand.extend(player_input_list)
       for i in player_input_list:
@@ -143,6 +148,7 @@ a = game(player(0), player(0))
 b = game(player(0), player(0))
 
 def teki_num(e):
+  print(f'teki_num: e={e}')
   if e == '1':
     return '2'
   if e == '2':

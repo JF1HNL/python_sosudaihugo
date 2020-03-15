@@ -19,10 +19,10 @@ client = discord.Client()
 async def on_ready():
   channel = client.get_channel(const.channel_id['bot_control'])
   # 起動したらターミナルにログイン通知が表示される
-  print('...ready')
   await channel.send('server-start!')
-  return
-  await function.new_game(client.guild)
+  await function.new_game(channel.guild)
+  print('...ready')
+  await channel.send('...ready')
 
 # メッセージ受信時に動作する処理
 @client.event
@@ -47,10 +47,6 @@ async def on_message(message):
   if message.channel.name == 'プレイヤーb-2':
     await channel.playerb2(message)
     return
-  # 「/neko」と発言したら「にゃーん」が返る処理
-  if message.content == '/neko':
-    await message.channel.send('にゃーん')
-  await message.channel.send(prime.primarity_test(message.content))
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
