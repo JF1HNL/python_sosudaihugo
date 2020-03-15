@@ -30,6 +30,8 @@ async def on_message(message):
   # メッセージ送信者がBotだった場合は無視する
   if message.author.bot:
     return
+  if message.channel.name == 'bot_作成チーム':
+    return
   if message.channel.name == 'bot_control':
     await channel.bot_control(message)
     return
