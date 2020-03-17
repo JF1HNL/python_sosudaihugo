@@ -39,6 +39,8 @@ async def bot_control(msg):
     await function.message_push(msg.guild, 'player-b-2', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.b.turn_message('2')}")
     await function.message_push(msg.guild, 'jikkyo-b', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.b.turn_message('jikkyo')}")
     await msg.channel.send(f'{msg.author.mention} ゲームスタートしました。')
+    return
+  print(f"{ary[0]}が見当たりません。")
 
 async def playera1(msg):
   print(f'channel.playera1: msg={msg}')
@@ -87,3 +89,34 @@ async def playerb2(msg):
     await function.message_push(msg.guild, 'player-b-2', data.b.turn_message('2'))
     await function.message_push(msg.guild, 'jikkyo-b', data.b.turn_message('jikkyo'))
   return
+
+async def player(msg, a_or_b, player_num_):
+  print(f'channel.player: msg={msg}, a_or_b={a_or_b}, player_num_={player_num_}')
+  class_data = data.a
+  if a_or_b == 'b':
+    class_data = data.b
+  if class_data.turn != player_num_:
+    return #あなたの番じゃないよ
+  return_obj = class_data.player_input(player_num_, msg.content.upper())
+  print(f"channel.player return_obj={return_obj}")
+  if return_obj['type'] == 'turn_continue': # まだ自分のターンが続くとき
+    await msg.channel.send(return_obj['text'])
+    return
+  if return_obj['type'] == 'turn_end': # 自分のターンが終わるとき,全体で公開されるとき
+    text = return_obj['text']
+    await function.message_push(msg.guild, 'player-' + a_or_b + '-1', f"{text}\n{class_data.turn_message('1')}")
+    await function.message_push(msg.guild, 'player-' + a_or_b + '-2', f"{text}\n{class_data.turn_message('2')}")
+    await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"{text}\n{class_data.turn_message('jikkyo')}")
+    return
+  if return_obj['type'] == 'winner':
+    await function.message_push(msg.guild, 'player-' + a_or_b + player_num_, "YOU WIN!")
+    await function.message_push(msg.guild, 'player-' + a_or_b + data.teki_num(player_num_), "YOU LOSE")
+    await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"プレイヤー{player_num_}が勝利しました。")
+    player1 = msg.get_member(class_data.player['1'].id)
+    player2 = msg.get_member(class_data.player['2'].id)
+    await function.role_change(player1, 'kankyaku')
+    await function.role_change(player2, 'kankyaku')
+    return
+  print(f"channel.player return_dict error : dict={return_obj}")
+
+# reutrn_obj = {'type', 'text'}

@@ -35,18 +35,24 @@ async def on_message(message):
   if message.channel.name == 'bot_control':
     await channel.bot_control(message)
     return
-  if message.channel.name == 'プレイヤーa-1':
-    await channel.playera1(message)
-    return
-  if message.channel.name == 'プレイヤーa-2':
-    await channel.playera2(message)
-    return
-  if message.channel.name == 'プレイヤーb-1':
-    await channel.playerb1(message)
-    return
-  if message.channel.name == 'プレイヤーb-2':
-    await channel.playerb2(message)
-    return
+  if 'プレイヤー' in message.channel.name:
+    channel_name = message.channel.name
+    print(channel_name[5])
+    print(channel_name[7])
+    await channel.player(message, channel_name[5], channel_name[7])
+    return 
+  # if message.channel.name == 'プレイヤーa-1':
+  #   await channel.playera1(message)
+  #   return
+  # if message.channel.name == 'プレイヤーa-2':
+  #   await channel.playera2(message)
+  #   return
+  # if message.channel.name == 'プレイヤーb-1':
+  #   await channel.playerb1(message)
+  #   return
+  # if message.channel.name == 'プレイヤーb-2':
+  #   await channel.playerb2(message)
+  #   return
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)

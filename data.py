@@ -63,7 +63,7 @@ class game:
     if player_num_ == 'jikkyo':
       return f'{self.current_situation(1, 1)}\n\nプレイヤー{self.turn}の番です。'
     if player_num_ == self.turn:
-      return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカーでスペースを開けてから、xの値を記入\nd はドロー\np はパス"
+      return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカー\nd はドロー(1ターンに一度のみ)\np はパス"
     else:
       return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\n相手のターンです。しばらくお待ちください。"
 
@@ -71,24 +71,24 @@ class game:
     print(f'data.player_input: player_num_={player_num_}, text_={text_}')
     if text_ == 'D':
       if self.draw_flag:
-        return "すでに一枚引きました！"
+        return {'type':'turn_continue','text':"すでに一枚引きました！"}
       self.draw(player_num_)
       self.draw_flag = True
-      return f"一枚引きました。\n{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\n素数はそのままアルファベットで記入\nx はジョーカーでスペースを開けてから、xの値を記入\np はパス"
+      return {'type':'turn_end', 'text':'ドローしました。'}
     if text_ == 'P':
       self.graveyard.extend(self.field)
       self.field = []
       self.draw_flag = False
       self.turn = teki_num(player_num_)
-      return 'パスしました。相手にターンが渡ります。'
+      return {'type':'turn_end', 'text':'パスしました。相手にターンが渡ります。'}
     if 'X' in text_: #ジョーカーを含んでいた時
       self.joker_memory['text'] = text_
       self.joker_memory['replace'] = []
-      return 'ジョーカーが選択されたので、最初のジョーカーの代わりとなる数字を入力してください。'
+      return {'type':'turn_continue','text':"ジョーカーが選択されたので、最初のジョーカーの代わりとなる数字を入力してください。"}
     if self.joker_memory['text'] != '': # ジョーカーのあとの処理
       self.joker_memory['replace'].append(text_)
       if len(self.joker_memory['replace']) != self.joker_memory['text'].count('X'): # ジョーカー二枚つかってたとき
-        return 'もう一枚のジョーカーの代わりとなる数字を入力してください'
+        return {'type':'turn_continue','text':'もう一枚のジョーカーの代わりとなる数字を入力してください'}
       text_ = self.joker_memory['text']
       self.joker_memory['text'] = ''
     player_input_list = []
@@ -96,7 +96,7 @@ class game:
       if not char in list(map(lambda x : x['char'], self.player[player_num_].hand)):
         self.player[player_num_].hand.extend(player_input_list)
         self.hand_sort()
-        return f'{char}が手札にありません！'
+        return {'type':'turn_continue','text':f'{char}が手札にありません！'}
       elif char == 'X':
         self.player[player_num_].hand.pop( # 削除
           int(
@@ -117,33 +117,44 @@ class game:
       field_obj =  {'char':''.join(list(map(lambda x : x['char'], self.field))), 'num':''.join(list(map(lambda x : str(x['num']), self.field)))}
       if len(field_obj['char']) != len(player_input_obj['char']):
         self.player[player_num_].hand.extend(player_input_list)
-        return 'フィールドの札の枚数と出した札の枚数が違います'
+        return {'type':'turn_continue','text':'フィールドの札の枚数と出した札の枚数が違います'}
       if int(field_obj['num']) >= int(player_input_obj['num']) and not self.kakumei:
         self.player[player_num_].hand.extend(player_input_list)
-        return 'フィールドの札の数のほうが大きいです'
+        return {'type':'turn_continue','text':'フィールドの札の数のほうが大きいです'}
       if int(field_obj['num']) <= int(player_input_obj['num']) and self.kakumei:
         self.player[player_num_].hand.extend(player_input_list)
-        return 'ラマヌジャン革命中です。フィールドの札の数のほうが小さいです'
+        return {'type':'turn_continue','text':'ラマヌジャン革命中です。フィールドの札の数のほうが小さいです'}
     self.draw_flag = False
     self.graveyard.extend(self.field)
     self.field = []
     self.turn = teki_num(player_num_)
-    if sympy.isprime(int(player_input_obj['num'])) is True:
-      self.field.extend(player_input_list)
-      return f"{player_input_obj['num']}は素数です！相手にターンが渡ります。"
-    if player_input_obj['num'] == '57':
-      self.turn = teki_num(player_num_)
-      self.graveyard.extend(player_input_list)
-      return f"グロタンディーク素数切りです。場が流れプレイヤー{player_num_}の番です。"
-    if player_input_obj['num'] == '1729':
-      self.kakumei = True
-      self.field.extend(player_input_list)
-      return 'ラマヌジャン革命です。今後は値が小さい数を出してください。相手にターンが渡ります。'
-    else:
+    print(f"data.plyaer_input player_input_obj[num]={int(player_input_obj['num'])}")
+    if sympy.isprime(int(player_input_obj['num'])) is False and player_input_obj['num'] != '57' and player_input_obj['num'] != '1729':
+      print('data.plyaer_input 素数ではなかった時')
       self.player[player_num_].hand.extend(player_input_list)
       for i in player_input_list:
         self.draw(player_num_)
-      return f"{player_input_obj['num']}は素数ではありません。ペナルティーが発生しました。相手にターンが渡ります。"
+      return {'type':'turn_end','text':f"{player_input_obj['num']}は素数ではありません。ペナルティーが発生しました。相手にターンが渡ります。"}
+    umekomi_type = 'turn_end'
+    if self.player[player_num_].hand == []: # 勝ちフラグ
+      print('data.plyaer_input 勝利確定')
+      self.turn = "0"
+      umekomi_type = 'winner'
+    if sympy.isprime(int(player_input_obj['num'])) is True:
+      print('data.plyaer_input 素数だったとき')
+      self.field.extend(player_input_list)
+      print(f"data.player_input 素数だったとき self.field={self.field}")
+      return {'type':umekomi_type,'text':f"{player_input_obj['num']}は素数です！相手にターンが渡ります。"}
+    if player_input_obj['num'] == '57':
+      print('data.plyaer_input グロタン')
+      self.turn = player_num_
+      self.graveyard.extend(player_input_list)
+      return {'type':umekomi_type,'text':f"グロタンディーク素数切りです。場が流れプレイヤー{player_num_}の番です。"}
+    if player_input_obj['num'] == '1729':
+      print('data.plyaer_input ラマヌジャン')
+      self.kakumei = True
+      self.field.extend(player_input_list)
+      return {'type':umekomi_type,'text':f'ラマヌジャン革命です。今後は値が小さい数を出してください。相手にターンが渡ります。'}
 
 a = game(player(0), player(0))
 b = game(player(0), player(0))
