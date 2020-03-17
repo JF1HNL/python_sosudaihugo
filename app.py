@@ -2,7 +2,6 @@
 # token情報やチャンネルidなどの定数を別のファイルにおく
 import const
 # 関数関係
-import prime
 import function
 import channel
 # インストールした discord.py を読み込む
