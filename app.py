@@ -19,10 +19,10 @@ client = discord.Client()
 async def on_ready():
   channel = client.get_channel(const.channel_id['bot_control'])
   # 起動したらターミナルにログイン通知が表示される
-  print('...ready')
   await channel.send('server-start!')
-  return
-  await function.new_game(client.guild)
+  await function.new_game(channel.guild)
+  print('...ready')
+  await channel.send('...ready')
 
 # メッセージ受信時に動作する処理
 @client.event
@@ -35,22 +35,24 @@ async def on_message(message):
   if message.channel.name == 'bot_control':
     await channel.bot_control(message)
     return
-  if message.channel.name == 'プレイヤーa-1':
-    await channel.playera1(message)
-    return
-  if message.channel.name == 'プレイヤーa-2':
-    await channel.playera2(message)
-    return
-  if message.channel.name == 'プレイヤーb-1':
-    await channel.playerb1(message)
-    return
-  if message.channel.name == 'プレイヤーb-2':
-    await channel.playerb2(message)
-    return
-  # 「/neko」と発言したら「にゃーん」が返る処理
-  if message.content == '/neko':
-    await message.channel.send('にゃーん')
-  await message.channel.send(prime.primarity_test(message.content))
+  if 'プレイヤー' in message.channel.name:
+    channel_name = message.channel.name
+    print(channel_name[5])
+    print(channel_name[7])
+    await channel.player(message, channel_name[5], channel_name[7])
+    return 
+  # if message.channel.name == 'プレイヤーa-1':
+  #   await channel.playera1(message)
+  #   return
+  # if message.channel.name == 'プレイヤーa-2':
+  #   await channel.playera2(message)
+  #   return
+  # if message.channel.name == 'プレイヤーb-1':
+  #   await channel.playerb1(message)
+  #   return
+  # if message.channel.name == 'プレイヤーb-2':
+  #   await channel.playerb2(message)
+  #   return
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
