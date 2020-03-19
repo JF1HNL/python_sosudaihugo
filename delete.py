@@ -37,6 +37,8 @@ async def on_message(message):
     return
   if message.channel.name == '対戦b観客部屋':
     return
+  if message.channel.name == 'バグやご要望':
+    return
   await message.channel.purge()
   print('投稿削除しました。')
 
