@@ -109,11 +109,13 @@ async def player(msg, a_or_b, player_num_):
     await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"{text}\n{class_data.turn_message('jikkyo')}")
     return
   if return_obj['type'] == 'winner':
-    await function.message_push(msg.guild, 'player-' + a_or_b + player_num_, "YOU WIN!")
-    await function.message_push(msg.guild, 'player-' + a_or_b + data.teki_num(player_num_), "YOU LOSE")
+    await function.message_push(msg.guild, f'player-{a_or_b}-{player_num_}', "YOU WIN!")
+    await function.message_push(msg.guild, f'player-{a_or_b}-{data.teki_num(player_num_)}', "YOU LOSE")
     await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"プレイヤー{player_num_}が勝利しました。")
     player1 = msg.get_member(class_data.player['1'].id)
     player2 = msg.get_member(class_data.player['2'].id)
+    print(f'channel.player winner player1={player1}')
+    print(f'channel.player winner player2={player2}')
     await function.role_change(player1, 'kankyaku')
     await function.role_change(player2, 'kankyaku')
     return

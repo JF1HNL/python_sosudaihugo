@@ -25,9 +25,17 @@ async def on_message(message):
   # メッセージ送信者がBotだった場合は無視する
   if message.author.bot:
     return
-  if message.channel.name == 'bot_作成チーム':
+  if message.channel.name == 'bot作成チーム':
     return
   if message.channel.name == 'bot_control':
+    return
+  if message.channel.name == 'コメントルーム':
+    return
+  if message.channel.name == 'ルール':
+    return
+  if message.channel.name == '対戦a観客部屋':
+    return
+  if message.channel.name == '対戦b観客部屋':
     return
   await message.channel.purge()
   print('投稿削除しました。')
