@@ -105,8 +105,8 @@ class game:
       return {'type':'turn_continue','text':"ジョーカーが選択されたので、最初のジョーカーの代わりとなる数字を入力してください。"}
     if self.joker_memory['text'] != '': # ジョーカーのあとの処理
       if not text_.isdecimal():
-        return {'type':'turn_continue', 'text':'数字ではありません。数字を入れてください。'}
-      if int(text_) < 14:
+        return {'type':'turn_continue', 'text':'数字ではありません。数字を入れてください。'}'
+      if int(text_) > 13:
         return {'type':'turn_continue', 'text':'数字が13よりも大きいです。13よりも小さい数字を入れてください。'}
       self.joker_memory['replace'].append(text_)
       if len(self.joker_memory['replace']) != self.joker_memory['text'].count('X'): # ジョーカー二枚つかってたとき
