@@ -42,54 +42,6 @@ async def bot_control(msg):
     return
   print(f"{ary[0]}が見当たりません。")
 
-async def playera1(msg):
-  print(f'channel.playera1: msg={msg}')
-  if data.a.turn != '1':
-    return #あなたの番じゃないよ
-  text =  data.a.player_input('1', msg.content.upper())
-  await function.message_push(msg.guild, 'player-a-1', text)
-  if '相手にターンが渡ります。' in text:
-    await function.message_push(msg.guild, 'player-a-1', data.a.turn_message('1'))
-    await function.message_push(msg.guild, 'player-a-2', data.a.turn_message('2'))
-    await function.message_push(msg.guild, 'jikkyo-a', data.a.turn_message('jikkyo'))
-  return
-
-async def playera2(msg):
-  print(f'channel.playera2: msg={msg}')
-  if data.a.turn != '2':
-    return #あなたの番じゃないよ
-  text =  data.a.player_input('2', msg.content.upper())
-  await function.message_push(msg.guild, 'player-a-2', text)
-  if '相手にターンが渡ります。' in text:
-    await function.message_push(msg.guild, 'player-a-1', data.a.turn_message('1'))
-    await function.message_push(msg.guild, 'player-a-2', data.a.turn_message('2'))
-    await function.message_push(msg.guild, 'jikkyo-a', data.a.turn_message('jikkyo'))
-  return
-
-async def playerb1(msg):
-  print(f'channel.playerb1: msg={msg}')
-  if data.b.turn != '1':
-    return #あなたの番じゃないよ
-  text =  data.b.player_input('1', msg.content.upper())
-  await function.message_push(msg.guild, 'player-b-1', text)
-  if '相手にターンが渡ります。' in text:
-    await function.message_push(msg.guild, 'player-b-1', data.b.turn_message('1'))
-    await function.message_push(msg.guild, 'player-b-2', data.b.turn_message('2'))
-    await function.message_push(msg.guild, 'jikkyo-b', data.b.turn_message('jikkyo'))
-  return
-
-async def playerb2(msg):
-  print(f'channel.playerb2: msg={msg}')
-  if data.b.turn != '2':
-    return #あなたの番じゃないよ
-  text =  data.b.player_input('2', msg.content.upper())
-  await function.message_push(msg.guild, 'player-b-2', text)
-  if '相手にターンが渡ります。' in text:
-    await function.message_push(msg.guild, 'player-b-1', data.b.turn_message('1'))
-    await function.message_push(msg.guild, 'player-b-2', data.b.turn_message('2'))
-    await function.message_push(msg.guild, 'jikkyo-b', data.b.turn_message('jikkyo'))
-  return
-
 async def player(msg, a_or_b, player_num_):
   print(f'channel.player: msg={msg}, a_or_b={a_or_b}, player_num_={player_num_}')
   class_data = data.a
@@ -109,15 +61,16 @@ async def player(msg, a_or_b, player_num_):
     await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"{text}\n{class_data.turn_message('jikkyo')}")
     return
   if return_obj['type'] == 'winner':
-    await function.message_push(msg.guild, f'player-{a_or_b}-{player_num_}', "YOU WIN!")
-    await function.message_push(msg.guild, f'player-{a_or_b}-{data.teki_num(player_num_)}', "YOU LOSE")
-    await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"プレイヤー{player_num_}が勝利しました。")
-    player1 = msg.get_member(class_data.player['1'].id)
-    player2 = msg.get_member(class_data.player['2'].id)
+    await function.message_push(msg.guild, f'player-{a_or_b}-{player_num_}', f"＿人人人人人人＿\n＞　YOU WIN!　＜\n￣Y^Y^Y^Y^Y^Y^￣\n{class_data.current_situation(0,0)}")
+    await function.message_push(msg.guild, f'player-{a_or_b}-{data.teki_num(player_num_)}', f"YOU LOSE\n{class_data.current_situation(0,0)}")
+    await function.message_push(msg.guild, 'jikkyo-' + a_or_b, f"＿人人人人人人人＿\n＞　ゲーム終了　＜\n￣Y^Y^Y^Y^Y^Y^Y^￣\nプレイヤー{player_num_}が勝利しました。\n{class_data.current_situation(0,0)}")
+    player1 = msg.guild.get_member(int(class_data.player['1'].id))
+    player2 = msg.guild.get_member(int(class_data.player['2'].id))
     print(f'channel.player winner player1={player1}')
     print(f'channel.player winner player2={player2}')
     await function.role_change(player1, 'kankyaku')
     await function.role_change(player2, 'kankyaku')
+    await function.message_push(msg.guild, 'bot_control', '役職設定終了しました。')
     return
   print(f"channel.player return_dict error : dict={return_obj}")
 

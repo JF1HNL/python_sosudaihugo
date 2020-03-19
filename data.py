@@ -53,10 +53,15 @@ class game:
       player_1 = ', '.join(list(map(lambda x: '?', self.player['1'].hand)))
     if two_secret:
       player_2 = ', '.join(list(map(lambda x: '?', self.player['2'].hand)))
-    return f"```\nプレイヤー1:{player_1}\n場の状況:{field} ({field_num})\nプレイヤー2:{player_2}\n```"
+    return f"```\n山札残り枚数:{len(self.deck)}\n\nプレイヤー1:{player_1}\n場の状況:{field} ({field_num})\nプレイヤー2:{player_2}\n```"
 
   def draw(self, player_num_):
-    print(f'data.draw: player_num_={player_num_}')
+    print(f'data.draw: player_num_={player_num_} deck_num={len(self.deck)}')
+    if self.deck == []:
+      print(f'data.draw: デッキリフレッシュ')
+      self.deck.extend(self.graveyard)
+      self.graveyard = []
+      random.shuffle(self.deck)
     self.player[player_num_].hand.append(self.deck[0])
     self.deck.pop(0)
     self.player[player_num_].hand = sorted(self.player[player_num_].hand, key=lambda x : int(x['num']))
@@ -92,11 +97,17 @@ class game:
     if text_ == 'G':
       self.gouseisu.flag = True
       return {'type':'turn_continue', 'text':"合成数出しが選択されました。場に出したい合成数を文字で入力してください。"}
-    if 'X' in text_: #ジョーカーを含んでいた時
+    if text_ == 'X':
+      print('ジョーカー最強！')
+    elif 'X' in text_: #ジョーカーを含んでいた時
       self.joker_memory['text'] = text_
       self.joker_memory['replace'] = []
       return {'type':'turn_continue','text':"ジョーカーが選択されたので、最初のジョーカーの代わりとなる数字を入力してください。"}
     if self.joker_memory['text'] != '': # ジョーカーのあとの処理
+      if text_.isdecimal():
+        return {'type':'turn_continue', 'text':'数字ではありません。数字を入れてください。'}
+      if int(text_) < 14:
+        return {'type':'turn_continue', 'text':'数字が13よりも大きいです。13よりも小さい数字を入れてください。'}
       self.joker_memory['replace'].append(text_)
       if len(self.joker_memory['replace']) != self.joker_memory['text'].count('X'): # ジョーカー二枚つかってたとき
         return {'type':'turn_continue','text':'もう一枚のジョーカーの代わりとなる数字を入力してください'}
@@ -116,7 +127,10 @@ class game:
             list(map(lambda x : x['char'], self.player[player_num_].hand)).index(char)
           )
         )
-        player_input_list.append({'num': int(self.joker_memory['replace'].pop(0)), 'char': 'X'})
+        if text_ == 'X': #一枚出し最強
+          player_input_list.append({'num': '1213', 'char': 'X'})
+        else:
+          player_input_list.append({'num': int(self.joker_memory['replace'].pop(0)), 'char': 'X'})
       else:
         player_input_list.append(
           self.player[player_num_].hand.pop(
@@ -177,6 +191,10 @@ class game:
       print('data.plyaer_input 勝利確定')
       self.turn = "0"
       umekomi_type = 'winner'
+    if text_ == 'X':
+      self.turn = player_num_
+      self.graveyard.extend(player_input_list)
+      return {'type':umekomi_type,'text':f"一枚出しジョーカーです。場が流れプレイヤー{player_num_}の番です。"}
     if self.gouseisu.flag:
       return_text = f"{self.gouseisu.field['obj']['num']}を合成数出しで出しました。相手にターンが渡ります。"
       self.field.extend(self.gouseisu.field['list'])
