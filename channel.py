@@ -113,6 +113,10 @@ async def player(msg, a_or_b, player_num_):
     await function.role_change(player1, 'kankyaku')
     await function.role_change(player2, 'kankyaku')
     await function.message_push(msg.guild, 'bot_control', '役職設定終了しました。')
+    if a_or_b == 'a':
+      data.a = data.game(data.player(0), data.player(0))
+    if a_or_b == 'b':
+      data.b = data.game(data.player(0), data.player(0))
     return
   print(f"channel.player return_dict error : dict={return_obj}")
 
