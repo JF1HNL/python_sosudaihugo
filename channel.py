@@ -1,5 +1,6 @@
 import function
 import data
+import const
 
 async def bot_control(msg):
   print(f'channel.bot_control: msg={msg}, ary={msg.content.split()}')
@@ -23,6 +24,7 @@ async def bot_control(msg):
     await function.role_change(member, f'player-{a_or_b}-2')
     await msg.channel.send(f'{msg.author.mention} 役職の設定が終わりました。')
   if ary[0] == 'game_start':
+    await msg.channel.send('ゲームを開始する準備をしています。')
     if len(ary) != 2:
       await msg.channel.send(f'{msg.author.mention} game_startの引数の数が違います。')
       return
@@ -33,9 +35,16 @@ async def bot_control(msg):
     class_data = data.a
     if a_or_b == 'b':
       class_data = data.b
+    channel = msg.guild.get_channel(const.channel_id[f'player-{a_or_b}-1'])
+    print(channel)
+    await channel.purge()
+    print(channel)
+    channel = msg.guild.get_channel(const.channel_id[f'player-{a_or_b}-2'])
+    await channel.purge()
     for i in range(11):
       class_data.draw('1')
       class_data.draw('2')
+    class_data.turn = '1'
     await function.message_push(msg.guild, f'player-{a_or_b}-1', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{class_data.turn_message('1')}")
     await function.message_push(msg.guild, f'player-{a_or_b}-2', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{class_data.turn_message('2')}")
     await function.message_push(msg.guild, f'jikkyo-{a_or_b}', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{class_data.turn_message('jikkyo')}")

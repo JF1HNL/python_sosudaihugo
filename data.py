@@ -15,7 +15,7 @@ class gouseisu:
 
 class game:
   def __init__(self, a, b):
-    self.turn = '1'
+    self.turn = '0'
     self.kakumei = False
     self.draw_flag = False
     self.gouseisu = gouseisu()
