@@ -4,6 +4,7 @@ import const
 # 関数関係
 import function
 import channel
+import data
 # インストールした discord.py を読み込む
 import discord
 
@@ -19,7 +20,8 @@ async def on_ready():
   channel = client.get_channel(const.channel_id['bot_control'])
   # 起動したらターミナルにログイン通知が表示される
   await channel.send('server-start!')
-  await function.new_game(channel.guild)
+  data.a = data.game(data.player(0), data.player(0))
+  data.b = data.game(data.player(0), data.player(0))
   print('...ready')
   await channel.send('...ready')
 

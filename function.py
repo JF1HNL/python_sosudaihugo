@@ -7,10 +7,12 @@ async def message_push(guild, channel_name, text):
   channel = channel = guild.get_channel(const.channel_id[channel_name])
   await channel.send(text)
 
-async def new_game(guild):
+async def new_game(guild, a_or_b):
   print('function.new_game')
-  data.a = data.game(data.player(0), data.player(0))
-  data.b = data.game(data.player(0), data.player(0))
+  class_data = data.a
+  if a_or_b == 'b':
+    class_data  = data.b
+  class_data = data.game(data.player(0), data.player(0))
   channel = guild.get_channel(const.channel_id['bot_control'])
   for member in guild.members:
     if not member.bot:
