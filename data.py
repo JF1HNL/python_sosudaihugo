@@ -50,9 +50,9 @@ class game:
     field = ', '.join(list(map(lambda x: x['char'], self.field)))
     field_num = ''.join(list(map(lambda x: str(x['num']), self.field)))
     if one_secret:
-      player_1 = ', '.join(list(map(lambda x: '?', self.player['1'].hand)))
+      player_1 = ', '.join(list(map(lambda x: x['char'], self.player['1'].hand)))
     if two_secret:
-      player_2 = ', '.join(list(map(lambda x: '?', self.player['2'].hand)))
+      player_2 = ', '.join(list(map(lambda x: x['char'], self.player['2'].hand)))
     return f"```\n山札残り枚数:{len(self.deck)}\n\nプレイヤー1:{player_1}\n場の状況:{field} ({field_num})\nプレイヤー2:{player_2}\n```"
 
   def draw(self, player_num_):
