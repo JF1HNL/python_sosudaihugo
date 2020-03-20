@@ -15,7 +15,7 @@ class gouseisu:
 
 class game:
   def __init__(self, a, b):
-    self.turn = '0'
+    self.turn = '1'
     self.kakumei = False
     self.draw_flag = False
     self.gouseisu = gouseisu()
@@ -73,7 +73,7 @@ class game:
   def turn_message(self, player_num_):
     print(f'data.turn_message: player_num_={player_num_}')
     if player_num_ == 'jikkyo':
-      return f'{self.current_situation(0, 0)}\n\nプレイヤー{self.turn}の番です。'
+      return f'{self.current_situation(1, 1)}\n\nプレイヤー{self.turn}の番です。'
     if player_num_ == self.turn:
       return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカー\nd はドロー(1ターンに一度のみ)\np はパス"
     else:
@@ -142,7 +142,7 @@ class game:
       judge_num = ''.join(list(map(lambda x : str(x['num']), player_input_list)))
       judge_num = judge_num.replace('^', '**')
       if int(self.gouseisu.field['obj']['num']) != eval(judge_num):
-        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(replace_text)}であり、異なっています。\n最初からやり直してください。"
+        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}であり、異なっています。\n最初からやり直してください。"
         self.gouseisu = gouseisu()
         self.player[player_num_].hand.extend(self.gouseisu.field['list'])
         self.player[player_num_].hand.extend([e for e in player_input_list if e['num'].isdecimal()])
