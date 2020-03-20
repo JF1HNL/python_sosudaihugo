@@ -2,43 +2,76 @@ import function
 import data
 
 async def bot_control(msg):
-  print(f'channel.bot_control: msg={msg}')
+  print(f'channel.bot_control: msg={msg}, ary={msg.content.split()}')
   ary = msg.content.split()
   if ary[0] == 'role_set':
-    ary.remove('role_set')
-    if len(ary) < 2:
-      await msg.channel.send(f'{msg.author.mention} memberが足りません。')
+    await msg.channel.send('役職を設定します。')
+    if len(ary) != 4:
+      await msg.channel.send(f'{msg.author.mention} role_setの引数の数が違います。')
+      return
+    ary.pop(0)
+    a_or_b = ary[0]
+    ary.pop(0)
+    if a_or_b != 'a' and a_or_b != 'b':
+      await msg.channel.send(f'{msg.author.mention} role_setの対戦の文字が違います。')
       return
     user_id = ary[0].translate(str.maketrans({'<':'', '>': '', '@':'', '!':''}))
     member = msg.guild.get_member(int(user_id))
-    await function.role_change(member, 'player-a-1')
+    await function.role_change(member, f'player-{a_or_b}-1')
     user_id = ary[1].translate(str.maketrans({'<':'', '>': '', '@':'', '!':''}))
     member = msg.guild.get_member(int(user_id))
-    await function.role_change(member, 'player-a-2')
-    if not len(ary) == 4:
-      return
-    user_id = ary[2].translate(str.maketrans({'<':'', '>': '', '@':'', '!':''}))
-    member = msg.guild.get_member(int(user_id))
-    await function.role_change(member, 'player-b-1')
-    user_id = ary[3].translate(str.maketrans({'<':'', '>': '', '@':'', '!':''}))
-    member = msg.guild.get_member(int(user_id))
-    await function.role_change(member, 'player-b-2')
+    await function.role_change(member, f'player-{a_or_b}-2')
     await msg.channel.send(f'{msg.author.mention} 役職の設定が終わりました。')
-  if ary[0] == 'new_game':
-    await function.new_game(msg.guild)
   if ary[0] == 'game_start':
+    if len(ary) != 2:
+      await msg.channel.send(f'{msg.author.mention} game_startの引数の数が違います。')
+      return
+    a_or_b = ary[1]
+    if a_or_b != 'a' and a_or_b != 'b':
+      await msg.channel.send(f'{msg.author.mention} game_startの対戦の文字が違います。')
+      return
+    class_data = data.a
+    if a_or_b == 'b':
+      class_data = data.b
     for i in range(11):
-      data.a.draw('1')
-      data.a.draw('2')
-      data.b.draw('1')
-      data.b.draw('2')
-    await function.message_push(msg.guild, 'player-a-1', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.turn_message('1')}")
-    await function.message_push(msg.guild, 'player-a-2', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.turn_message('2')}")
-    await function.message_push(msg.guild, 'jikkyo-a', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.a.turn_message('jikkyo')}")
-    await function.message_push(msg.guild, 'player-b-1', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.b.turn_message('1')}")
-    await function.message_push(msg.guild, 'player-b-2', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.b.turn_message('2')}")
-    await function.message_push(msg.guild, 'jikkyo-b', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{data.b.turn_message('jikkyo')}")
+      class_data.draw('1')
+      class_data.draw('2')
+    await function.message_push(msg.guild, f'player-{a_or_b}-1', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{class_data.turn_message('1')}")
+    await function.message_push(msg.guild, f'player-{a_or_b}-2', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{class_data.turn_message('2')}")
+    await function.message_push(msg.guild, f'jikkyo-{a_or_b}', f"素数大富豪スタート！\nお互いに11枚引きました。\n\n{class_data.turn_message('jikkyo')}")
     await msg.channel.send(f'{msg.author.mention} ゲームスタートしました。')
+    return
+  if ary[0] == 'game_reset':
+    await msg.channel.send('ゲームをリセットします。')
+    if len(ary) != 2:
+      await msg.channel.send(f'{msg.author.mention} game_startの引数の数が違います。')
+      return
+    a_or_b = ary[1]
+    if a_or_b != 'a' and a_or_b != 'b':
+      await msg.channel.send(f'{msg.author.mention} game_startの対戦の文字が違います。')
+      return
+    class_data = data.a
+    if a_or_b == 'b':
+      class_data = data.b
+    player_id = class_data.player['1'].id
+    if player_id != '0':
+      player = msg.guild.get_member(player_id)
+      await function.role_change(player, "kankyaku")
+    player_id = class_data.player['2'].id
+    if player_id != '0':
+      player = msg.guild.get_member(player_id)
+      await function.role_change(player, "kankyaku")
+    if a_or_b == 'a':
+      data.a = data.game(data.player(0), data.player(0))
+    elif a_or_b == 'b':
+      data.b = data.game(data.player(0), data.player(0))
+    return
+  if ary[0] == 'role_reset':
+    await function.message_push(msg.guild, 'bot_control', "全てのメンバーを観客に変更します。")
+    for member in msg.guild.members:
+      if not member.bot:
+        await function.role_change(member, "kankyaku")
+    await msg.channel.send('役職の初期化がおわりました。')
     return
   print(f"{ary[0]}が見当たりません。")
 

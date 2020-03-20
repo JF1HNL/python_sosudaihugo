@@ -19,7 +19,8 @@ async def on_ready():
   channel = client.get_channel(const.channel_id['bot_control'])
   # 起動したらターミナルにログイン通知が表示される
   await channel.send('server-start!')
-  await function.new_game(channel.guild)
+  data.a = game(data.player(0), data.player(0))
+  data.b = game(data.player(0), data.player(0))
   print('...ready')
   await channel.send('...ready')
 
