@@ -61,7 +61,6 @@ class game:
       print(f'data.draw: デッキリフレッシュ')
       self.deck.extend(self.graveyard)
       self.graveyard = []
-      random.shuffle(self.deck)
     self.player[player_num_].hand.append(self.deck[0])
     self.deck.pop(0)
     self.player[player_num_].hand = sorted(self.player[player_num_].hand, key=lambda x : int(x['num']))
