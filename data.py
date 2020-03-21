@@ -161,17 +161,17 @@ class game:
       for n in judge_num_ary:
         if not sympy.isprime(int(n)):
           self.player[player_num_].hand.extend(self.gouseisu.field['list'])
-          for i in self.gouseisu.field['list']:
-            self.draw(player_num_)
+          # for i in self.gouseisu.field['list']:
+          #   self.draw(player_num_)
           self.player[player_num_].hand.extend([e for e in player_input_list if str(e['num']).isdecimal()])
-          for i in [e for e in player_input_list if str(e['num']).isdecimal()]:
-            self.draw(player_num_)
-          self.draw_flag = False
-          self.graveyard.extend(self.field)
-          self.field = []
-          self.turn = teki_num(player_num_)
+          # for i in [e for e in player_input_list if str(e['num']).isdecimal()]:
+          #   self.draw(player_num_)
+          # self.draw_flag = False
+          # self.graveyard.extend(self.field)
+          # self.field = []
+          # self.turn = teki_num(player_num_)
           self.gouseisu = gouseisu()
-          return {'type':'turn_end', 'text':f"因数として入力された{n}は素数ではありませんでした。ペナルティを受け、相手にターンが渡ります。"}
+          return {'type':'turn_end', 'text':f"因数として入力された{n}は素数ではありませんでした。最初から入力をやり直してください"}
       self.graveyard.extend([e for e in player_input_list if str(e['num']).isdecimal()])
       player_input_obj = self.gouseisu.field['obj']
     else:
