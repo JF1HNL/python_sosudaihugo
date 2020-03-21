@@ -67,8 +67,8 @@ class game:
 
   def hand_sort(self):
     print(f'data.hand_sort')
-    sorted(self.player['1'].hand, key=lambda x : int(x['num']))
-    sorted(self.player['2'].hand, key=lambda x : int(x['num']))
+    self.player['1'].hand = sorted(self.player['1'].hand, key=lambda x : int(x['num']))
+    self.player['2'].hand = sorted(self.player['2'].hand, key=lambda x : int(x['num']))
 
   def turn_message(self, player_num_):
     print(f'data.turn_message: player_num_={player_num_}')
@@ -101,15 +101,15 @@ class game:
     elif 'X' in text_: #ジョーカーを含んでいた時
       self.joker_memory['text'] = text_
       self.joker_memory['replace'] = []
-      return {'type':'turn_continue','text':"ジョーカーが選択されたので、最初のジョーカーの代わりとなる数字を入力してください。"}
+      return {'type':'turn_continue','text':"ジョーカーが選択されたので、最初のジョーカーの代わりとなる0~13の間の数字を入力してください。"}
     if self.joker_memory['text'] != '': # ジョーカーのあとの処理
       if not text_.isdecimal():
         return {'type':'turn_continue', 'text':'数字ではありません。数字を入れてください。'}
-      if int(text_) > 13:
-        return {'type':'turn_continue', 'text':'数字が13よりも大きいです。13よりも小さい数字を入れてください。'}
+      if int(text_) > 13 or int(text_) < 0:
+        return {'type':'turn_continue', 'text':'数字が0~13の間のではありません。0~13の間で記入してください。'}
       self.joker_memory['replace'].append(text_)
       if len(self.joker_memory['replace']) != self.joker_memory['text'].count('X'): # ジョーカー二枚つかってたとき
-        return {'type':'turn_continue','text':'もう一枚のジョーカーの代わりとなる数字を入力してください'}
+        return {'type':'turn_continue','text':'もう一枚のジョーカーの代わりとなる0~13の間の数字を入力してください'}
       text_ = self.joker_memory['text']
       self.joker_memory['text'] = ''
     player_input_list = []
@@ -142,19 +142,36 @@ class game:
       judge_num = ''.join(list(map(lambda x : str(x['num']), player_input_list)))
       judge_num = judge_num.replace('^', '**')
       if int(self.gouseisu.field['obj']['num']) != eval(judge_num):
-        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}={text_}であり、異なっています。\n最初からやり直してください。"
-        self.gouseisu = gouseisu()
+        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}={text_}であり、異なっています。ペナルティを受け、相手にターンがわたります。"
+        print(f"data.player_input 147 self.gouseisu.field['list']={self.gouseisu.field['list']}")
         self.player[player_num_].hand.extend(self.gouseisu.field['list'])
+        for i in self.gouseisu.field['list']:
+          self.draw(player_num_)
         self.player[player_num_].hand.extend([e for e in player_input_list if str(e['num']).isdecimal()])
-        return {'type':'turn_continue', 'text':return_text}
+        for i in [e for e in player_input_list if str(e['num']).isdecimal()]:
+          self.draw(player_num_)
+        self.gouseisu = gouseisu()
+        self.draw_flag = False
+        self.graveyard.extend(self.field)
+        self.field = []
+        self.turn = teki_num(player_num_)
+        return {'type':'turn_end', 'text':return_text}
       judge_num = judge_num.replace('*', ' ').replace('(', ' ').replace(')', ' ')
       judge_num_ary = judge_num.split()
       for n in judge_num_ary:
         if not sympy.isprime(int(n)):
-          self.gouseisu = gouseisu()
           self.player[player_num_].hand.extend(self.gouseisu.field['list'])
+          for i in self.gouseisu.field['list']:
+            self.draw(player_num_)
           self.player[player_num_].hand.extend([e for e in player_input_list if str(e['num']).isdecimal()])
-          return {'type':'turn_continue', 'text':f"因数として入力された{n}は素数ではありませんでした。\n最初からやり直してください"}
+          for i in [e for e in player_input_list if str(e['num']).isdecimal()]:
+            self.draw(player_num_)
+          self.draw_flag = False
+          self.graveyard.extend(self.field)
+          self.field = []
+          self.turn = teki_num(player_num_)
+          self.gouseisu = gouseisu()
+          return {'type':'turn_end', 'text':f"因数として入力された{n}は素数ではありませんでした。ペナルティを受け、相手にターンが渡ります。"}
       self.graveyard.extend([e for e in player_input_list if str(e['num']).isdecimal()])
       player_input_obj = self.gouseisu.field['obj']
     else:
@@ -171,7 +188,10 @@ class game:
         self.player[player_num_].hand.extend(player_input_list)
         return {'type':'turn_continue','text':'ラマヌジャン革命中です。フィールドの札の数のほうが小さいです'}
     if self.gouseisu.flag and not self.gouseisu.gouseisu_flag:
-      self.gouseisu.field = {'list':player_input_list, 'obj':player_input_obj}
+      print(f"data.player_input 183 player_input_list={player_input_list}")
+      self.gouseisu.field['list'].extend(player_input_list)
+      self.gouseisu.field['obj'] = {'char':player_input_obj['char'], 'num':player_input_obj['num']}
+      print(f"data.player_input 186 self.gouseisu.field['list']={self.gouseisu.field['list']}")
       self.gouseisu.gouseisu_flag = True
       return {'type':'turn_continue', 'text':f"{player_input_obj['char']}が入力されました。\n素因数分解の結果を積は*,カッコは(),ベキは^で記入してください。"}
     self.draw_flag = False
