@@ -142,7 +142,7 @@ class game:
       judge_num = ''.join(list(map(lambda x : str(x['num']), player_input_list)))
       judge_num = judge_num.replace('^', '**')
       if int(self.gouseisu.field['obj']['num']) != eval(judge_num):
-        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}であり、異なっています。\n最初からやり直してください。"
+        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}={text_}であり、異なっています。\n最初からやり直してください。"
         self.gouseisu = gouseisu()
         self.player[player_num_].hand.extend(self.gouseisu.field['list'])
         self.player[player_num_].hand.extend([e for e in player_input_list if str(e['num']).isdecimal()])
