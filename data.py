@@ -73,7 +73,7 @@ class game:
   def turn_message(self, player_num_):
     print(f'data.turn_message: player_num_={player_num_}')
     if player_num_ == 'jikkyo':
-      return f'{self.current_situation(1, 1)}\n\nプレイヤー{self.turn}の番です。'
+      return f'{self.current_situation(0, 0)}\n\nプレイヤー{self.turn}の番です。'
     if player_num_ == self.turn:
       return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカー\nd はドロー(1ターンに一度のみ)\ng は合成数だし\npはパス"
     else:
@@ -142,10 +142,10 @@ class game:
       judge_num = ''.join(list(map(lambda x : str(x['num']), player_input_list)))
       judge_num = judge_num.replace('^', '**')
       if int(self.gouseisu.field['obj']['num']) != eval(judge_num):
-        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}であり、異なっています。\n最初からやり直してください。"
+        return_text = f"合成数として{self.gouseisu.field['obj']['num']}が入力されましたが、\n因数の計算結果が{eval(judge_num)}={text_}であり、異なっています。\n最初からやり直してください。"
         self.gouseisu = gouseisu()
         self.player[player_num_].hand.extend(self.gouseisu.field['list'])
-        self.player[player_num_].hand.extend([e for e in player_input_list if e['num'].isdecimal()])
+        self.player[player_num_].hand.extend([e for e in player_input_list if str(e['num']).isdecimal()])
         return {'type':'turn_continue', 'text':return_text}
       judge_num = judge_num.replace('*', ' ').replace('(', ' ').replace(')', ' ')
       judge_num_ary = judge_num.split()
@@ -195,7 +195,7 @@ class game:
       self.graveyard.extend(player_input_list)
       return {'type':umekomi_type,'text':f"一枚出しジョーカーです。場が流れプレイヤー{player_num_}の番です。"}
     if self.gouseisu.flag:
-      return_text = f"{self.gouseisu.field['obj']['num']}を合成数出しで出しました。相手にターンが渡ります。"
+      return_text = f"{self.gouseisu.field['obj']['num']}={text_}を合成数出しで出しました。相手にターンが渡ります。"
       self.field.extend(self.gouseisu.field['list'])
       self.gouseisu = gouseisu()
       return {'type':umekomi_type,'text':return_text}
