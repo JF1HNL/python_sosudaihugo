@@ -73,7 +73,7 @@ class game:
   def turn_message(self, player_num_):
     print(f'data.turn_message: player_num_={player_num_}')
     if player_num_ == 'jikkyo':
-      return f'{self.current_situation(1, 1)}\n\nプレイヤー{self.turn}の番です。'
+      return f'{self.current_situation(0, 0)}\n\nプレイヤー{self.turn}の番です。'
     if player_num_ == self.turn:
       return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカー\nd はドロー(1ターンに一度のみ)\np はパス"
     else:
@@ -195,7 +195,7 @@ class game:
       self.graveyard.extend(player_input_list)
       return {'type':umekomi_type,'text':f"一枚出しジョーカーです。場が流れプレイヤー{player_num_}の番です。"}
     if self.gouseisu.flag:
-      return_text = f"{self.gouseisu.field['obj']['num']}を合成数出しで出しました。相手にターンが渡ります。"
+      return_text = f"{self.gouseisu.field['obj']['num']}"+"="+judge_num+"を合成数出しで出しました。相手にターンが渡ります。"
       self.field.extend(self.gouseisu.field['list'])
       self.gouseisu = gouseisu()
       return {'type':umekomi_type,'text':return_text}
