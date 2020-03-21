@@ -36,9 +36,7 @@ async def bot_control(msg):
     if a_or_b == 'b':
       class_data = data.b
     channel = msg.guild.get_channel(const.channel_id[f'player-{a_or_b}-1'])
-    print(channel)
     await channel.purge()
-    print(channel)
     channel = msg.guild.get_channel(const.channel_id[f'player-{a_or_b}-2'])
     await channel.purge()
     for i in range(11):
@@ -63,17 +61,18 @@ async def bot_control(msg):
     if a_or_b == 'b':
       class_data = data.b
     player_id = class_data.player['1'].id
-    if player_id != '0':
+    if player_id != 0:
       player = msg.guild.get_member(player_id)
       await function.role_change(player, "kankyaku")
     player_id = class_data.player['2'].id
-    if player_id != '0':
+    if player_id != 0:
       player = msg.guild.get_member(player_id)
       await function.role_change(player, "kankyaku")
     if a_or_b == 'a':
       data.a = data.game(data.player(0), data.player(0))
     elif a_or_b == 'b':
       data.b = data.game(data.player(0), data.player(0))
+    await msg.channel.send(f'{msg.author.mention} ゲームリセットしました。')
     return
   if ary[0] == 'role_reset':
     await function.message_push(msg.guild, 'bot_control', "全てのメンバーを観客に変更します。")
