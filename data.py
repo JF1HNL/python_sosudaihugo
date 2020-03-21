@@ -75,7 +75,7 @@ class game:
     if player_num_ == 'jikkyo':
       return f'{self.current_situation(1, 1)}\n\nプレイヤー{self.turn}の番です。'
     if player_num_ == self.turn:
-      return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカー\nd はドロー(1ターンに一度のみ)\np はパス"
+      return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\nあなたのターンです。\n素数はそのままアルファベットで記入\nx はジョーカー\nd はドロー(1ターンに一度のみ)\ng は合成数だし\npはパス"
     else:
       return f"{self.current_situation(not player_num_ == '1', not player_num_ == '2')}\n相手のターンです。しばらくお待ちください。"
 
