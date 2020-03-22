@@ -189,6 +189,9 @@ class game:
         return {'type':'turn_continue','text':'ラマヌジャン革命中です。フィールドの札の数のほうが小さいです'}
     if self.gouseisu.flag and not self.gouseisu.gouseisu_flag:
       print(f"data.player_input 183 player_input_list={player_input_list}")
+      if sympy.isprime(int(player_input_obj['num'])):
+        self.player[player_num_].hand.extend(player_input_list)
+        return {'type':'turn_continue', 'text':f"合成数出しが指定されていますが{player_input_obj['num']}は素数です。合成数を記入してください。"}
       self.gouseisu.field['list'].extend(player_input_list)
       self.gouseisu.field['obj'] = {'char':player_input_obj['char'], 'num':player_input_obj['num']}
       print(f"data.player_input 186 self.gouseisu.field['list']={self.gouseisu.field['list']}")
