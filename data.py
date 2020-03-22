@@ -161,7 +161,7 @@ class game:
         return {'type':'turn_end', 'text':return_text}
       judge_num = ''.join(list(map(lambda x : str(x['num']), player_input_list)))
       judge_num_ary = judge_num.replace('(', '').replace(')', '').replace('*', ' ').split()
-      judge_num_ary = [e.replace('^', ' ').split for e in judge_num_ary]
+      judge_num_ary = [e.replace('^', ' ').split() for e in judge_num_ary]
       for n in judge_num_ary:
         if not sympy.isprime(int(n[0])):
           self.player[player_num_].hand.extend(self.gouseisu.field['list'])
@@ -175,7 +175,7 @@ class game:
           # self.field = []
           # self.turn = teki_num(player_num_)
           self.gouseisu = gouseisu()
-          return {'type':'turn_end', 'text':f"因数として入力された{n}は素数ではありませんでした。最初から入力をやり直してください"}
+          return {'type':'turn_end', 'text':f"因数として入力された{n[0]}は素数ではありませんでした。最初から入力をやり直してください"}
       self.graveyard.extend([e for e in player_input_list if str(e['num']).isdecimal()])
       player_input_obj = self.gouseisu.field['obj']
     else:
