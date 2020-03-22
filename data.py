@@ -59,6 +59,9 @@ class game:
     print(f'data.draw: player_num_={player_num_} deck_num={len(self.deck)}')
     if self.deck == []:
       print(f'data.draw: デッキリフレッシュ')
+      if self.graveyard == []:
+        print(f'data.draw: デッキリフレッシュできなかった。')
+        return
       self.deck.extend(self.graveyard)
       self.graveyard = []
     self.player[player_num_].hand.append(self.deck[0])
@@ -156,10 +159,11 @@ class game:
         self.field = []
         self.turn = teki_num(player_num_)
         return {'type':'turn_end', 'text':return_text}
-      judge_num = judge_num.replace('*', ' ').replace('(', ' ').replace(')', ' ')
-      judge_num_ary = judge_num.split()
+      judge_num = ''.join(list(map(lambda x : str(x['num']), player_input_list)))
+      judge_num_ary = judge_num.replace('(', '').replace(')', '').replace('*', ' ').split()
+      judge_num_ary = [e.replace('^', ' ').split for e in judge_num_ary]
       for n in judge_num_ary:
-        if not sympy.isprime(int(n)):
+        if not sympy.isprime(int(n[0])):
           self.player[player_num_].hand.extend(self.gouseisu.field['list'])
           # for i in self.gouseisu.field['list']:
           #   self.draw(player_num_)
